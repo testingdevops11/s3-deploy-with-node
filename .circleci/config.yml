@@ -1,16 +1,29 @@
 version: 2.1
+
 orbs:
-  node: circleci/node@5.0.2
-  aws-s3: circleci/aws-s3@2.0
+  aws-cli: circleci/aws-cli@1.4.0
+
+jobs:
+  deploy-cfn:
+    parameters:
+      stack-name:
+        description: Name of the CloudFormation stack
+        type: string
+    executor: aws-cli/default
+    steps:
+      - checkout
+      - aws-cli/setup
+      - run:
+          name: Deploy Cloudformation Template with new Docker image
+          command: |
+            aws cloudformation deploy \
+            --template gluedb.yml
+            --stack circleci-cicd
+                     
 
 workflows:
-  s3 deployment: 
-    jobs:
-      - node/test:
-          version: "15.1"
-          post-steps:
-            - run: npm run build
-            - aws-s3/copy:
-                from: dist/
-                to: s3://sample-app-vue
-                arguments: --recursive
+  deploy:
+    - deploy-cfn:
+      context:
+        - aws-deploy
+      stack-name: circleci-cicd
