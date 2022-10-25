@@ -1,0 +1,26 @@
+
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  Layer-1 for domain accounts. Includes: 
+  S3 Buckets (raw/trusted/curated/config)
+  S3 Bucket Policies to allow SSL requests only
+  Glue Databases (raw/trusted/curated)
+
+Resources:
+#######  LF-database #######
+  RawGlueDatabase:
+    Type: AWS::Glue::Database
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: testingcirclecidb
+        Description: Glue Database for RAW Zone 
+
+#######  Outputs  #######
+Outputs:
+
+  RawDatabasename:
+    Value: !Ref RawGlueDatabase
+    Export:
+      Name: raw-db-name
+
