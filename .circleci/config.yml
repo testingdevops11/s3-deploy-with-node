@@ -17,7 +17,7 @@ jobs:
           name: Deploy Cloudformation Template with new Docker image
           command: |
             aws cloudformation deploy \
-            --template gluedb.yml
+            --template gluedb.yml \
             --stack circleci-cicd
                      
 
@@ -25,5 +25,5 @@ workflows:
   deploy:
     - deploy-cfn:
       context:
-        - aws-deploy
+        - aws-deployment
       stack-name: circleci-cicd
